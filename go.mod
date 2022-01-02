@@ -7,8 +7,13 @@ replace github.com/geebytes/tegenaria v0.0.0 => ../tegenaria
 require github.com/geebytes/tegenaria v0.0.0
 
 require (
+	github.com/PuerkitoBio/goquery v1.8.0 // indirect
+	github.com/andybalholm/cascadia v1.3.1 // indirect
 	github.com/antchfx/xpath v1.2.0 // indirect
+	github.com/geebytes/libxml2 v0.0.0-20201123224832-e6d9de61b80d // indirect
 	github.com/golang/groupcache v0.0.0-20210331224755-41bb18bfe9da // indirect
+	github.com/lestrrat-go/libxml2 v0.0.0-20201123224832-e6d9de61b80d // indirect
+	github.com/pkg/errors v0.8.1 // indirect
 )
 
 require (

@@ -1,10 +1,11 @@
 package quotesbot
 
 import (
+	"log"
 	"net/url"
 	"strings"
 
-	"github.com/antchfx/htmlquery"
+	"github.com/PuerkitoBio/goquery"
 	"github.com/geebytes/tegenaria"
 )
 
@@ -18,57 +19,98 @@ type QuotesbotItem struct {
 	Tags   string
 }
 
-func (d *QuotesbotSpider) StartRequest(req chan<- *tegenaria.Request) {
+func (d *QuotesbotSpider) StartRequest(req chan<- *tegenaria.Context) {
 	for i := 0; i < 10000; i++ {
 		for _, url := range d.FeedUrls {
 			request := tegenaria.NewRequest(url, tegenaria.GET, d.Parser)
-			req <- request
+			ctx := tegenaria.NewContext(request)
+			req <- ctx
 		}
 	}
 
 }
-func (d *QuotesbotSpider) Parser(response *tegenaria.Response, item chan<- tegenaria.ItemInterface, req chan<- *tegenaria.Request) {
-	text := response.String()
-	doc, _ := htmlquery.Parse(strings.NewReader(text))
-	list, err := htmlquery.QueryAll(doc, "//div[@class='quote']")
-	if err != nil {
-		panic(err)
-	}
-	for _, n := range list {
-		t := htmlquery.FindOne(n, "//span[@class='text']")
-		var quoteText string = ""
-		var quoteAuthor string = ""
-		var quoteTags string = ""
-		if t != nil {
-			quoteText = htmlquery.InnerText(t)
-		}
-		author := htmlquery.FindOne(n, "//small[@class='author']")
-		if author != nil {
-			quoteAuthor = htmlquery.InnerText(author)
-		}
-		tags := htmlquery.FindOne(n, "//div[@class='tags']/a[@class='tag']")
-		if tags != nil {
-			quoteTags = htmlquery.InnerText(tags)
-		}
-		var quoteItem = QuotesbotItem{
-			Text:   quoteText,
-			Author: quoteAuthor,
-			Tags:   quoteTags,
-		}
-		item <- &quoteItem
-	}
-	doamin_url := response.Req.Url
-	u, _ := url.Parse(doamin_url)
+func (d *QuotesbotSpider) Parser(resp *tegenaria.Context, item chan<- *tegenaria.Context, req chan<- *tegenaria.Context) {
+	text := resp.DownloadResult.Response.String()
 
-	var nextPageUrl string = ""
-	nextUrl := htmlquery.FindOne(doc, "//li[@class='next']/a")
-	if nextUrl != nil {
-		nextPageUrl = htmlquery.SelectAttr(nextUrl, "href")
-		next, _ := url.Parse(nextPageUrl)
-		s := u.ResolveReference(next).String()
-		request := tegenaria.NewRequest(s, tegenaria.GET, d.Parser)
-		req <- request
+	doc, err := goquery.NewDocumentFromReader(strings.NewReader(text))
+
+	if err != nil {
+		log.Fatal(err)
 	}
+	doc.Find(".quote").Each(func(i int, s *goquery.Selection) {
+		// For each item found, get the title
+		qText := s.Find(".text").Text()
+		author := s.Find(".author").Text()
+		tags := make([]string, 0)
+		s.Find("a.tag").Each(func(i int, s *goquery.Selection) {
+			tags = append(tags, s.Text())
+		})
+		var quoteItem = QuotesbotItem{
+			Text:   qText,
+			Author: author,
+			Tags:   strings.Join(tags, ","),
+		}
+		itemCtx := tegenaria.NewContext(resp.Request)
+		itemCtx.Item = &quoteItem
+		item <- itemCtx
+	})
+	doamin_url := resp.Request.Url
+	next := doc.Find("li.next")
+	if next != nil {
+		nextUrl, ok := next.Find("a").Attr("href")
+		if ok {
+			u, _ := url.Parse(doamin_url)
+
+			nextInfo, _ := url.Parse(nextUrl)
+			s := u.ResolveReference(nextInfo).String()
+			newRequest := tegenaria.NewRequest(s, tegenaria.GET, d.Parser)
+			newCtx := tegenaria.NewContext(newRequest)
+			req <- newCtx
+		}
+	}
+
+	// doc, _ := htmlquery.Parse(strings.NewReader(text))
+	// list, err := htmlquery.QueryAll(doc, "//div[@class='quote']")
+	// if err != nil {
+	// 	panic(err)
+	// }
+	// for _, n := range list {
+	// 	t := htmlquery.FindOne(n, "//span[@class='text']")
+	// 	var quoteText string = ""
+	// 	var quoteAuthor string = ""
+	// 	var quoteTags string = ""
+	// 	if t != nil {
+	// 		quoteText = htmlquery.InnerText(t)
+	// 	}
+	// 	author := htmlquery.FindOne(n, "//small[@class='author']")
+	// 	if author != nil {
+	// 		quoteAuthor = htmlquery.InnerText(author)
+	// 	}
+	// 	tags := htmlquery.FindOne(n, "//div[@class='tags']/a[@class='tag']")
+	// 	if tags != nil {
+	// 		quoteTags = htmlquery.InnerText(tags)
+	// 	}
+	// 	var quoteItem = QuotesbotItem{
+	// 		Text:   quoteText,
+	// 		Author: quoteAuthor,
+	// 		Tags:   quoteTags,
+	// 	}
+	// 	itemCtx := tegenaria.NewContext(resp.Request, tegenaria.ContextWithItem(&quoteItem))
+	// 	item <- itemCtx
+	// }
+	// doamin_url := resp.Request.Url
+	// u, _ := url.Parse(doamin_url)
+
+	// var nextPageUrl string = ""
+	// nextUrl := htmlquery.FindOne(doc, "//li[@class='next']/a")
+	// if nextUrl != nil {
+	// 	nextPageUrl = htmlquery.SelectAttr(nextUrl, "href")
+	// 	next, _ := url.Parse(nextPageUrl)
+	// 	s := u.ResolveReference(next).String()
+	// 	request := tegenaria.NewRequest(s, tegenaria.GET, d.Parser)
+	// 	reqCtx := tegenaria.NewContext(request)
+	// 	req <- reqCtx
+	// }
 
 }
 func (d *QuotesbotSpider) ErrorHandler() {
@@ -88,7 +130,7 @@ type QuotesbotItemPipeline3 struct {
 	Priority int
 }
 
-func (p *QuotesbotItemPipeline) ProcessItem(spider tegenaria.SpiderInterface, item tegenaria.ItemInterface) error {
+func (p *QuotesbotItemPipeline) ProcessItem(spider tegenaria.SpiderInterface, item *tegenaria.Context) error {
 	// fmt.Printf("Spider %s run QuotesbotItemPipeline priority is %d\n", spider.GetName(), p.GetPriority())
 	return nil
 
@@ -96,7 +138,7 @@ func (p *QuotesbotItemPipeline) ProcessItem(spider tegenaria.SpiderInterface, it
 func (p *QuotesbotItemPipeline) GetPriority() int {
 	return p.Priority
 }
-func (p *QuotesbotItemPipeline2) ProcessItem(spider tegenaria.SpiderInterface, item tegenaria.ItemInterface) error {
+func (p *QuotesbotItemPipeline2) ProcessItem(spider tegenaria.SpiderInterface, item *tegenaria.Context) error {
 	// fmt.Printf("Spider %s run QuotesbotItemPipeline2 priority is %d\n", spider.GetName(), p.GetPriority())
 	return nil
 }
@@ -104,7 +146,7 @@ func (p *QuotesbotItemPipeline2) GetPriority() int {
 	return p.Priority
 }
 
-func (p *QuotesbotItemPipeline3) ProcessItem(spider tegenaria.SpiderInterface, item tegenaria.ItemInterface) error {
+func (p *QuotesbotItemPipeline3) ProcessItem(spider tegenaria.SpiderInterface, item *tegenaria.Context) error {
 	// fmt.Printf("Spider %s run QuotesbotItemPipeline3 priority is %d\n", spider.GetName(), p.GetPriority())
 	return nil
 

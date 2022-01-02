@@ -9,8 +9,8 @@ package main
 
 import (
 	"fmt"
-	"os"
-	"runtime/pprof"
+	"net/http"
+	_ "net/http/pprof"
 	"time"
 
 	"github.com/geebytes/tegenaria"
@@ -18,10 +18,13 @@ import (
 )
 
 func main() {
-	f, _ := os.OpenFile("cpu.pprof", os.O_CREATE|os.O_RDWR, 0644)
-	defer f.Close()
-	pprof.StartCPUProfile(f)
-	defer pprof.StopCPUProfile()
+	// f, _ := os.OpenFile("cpu.pprof", os.O_CREATE|os.O_RDWR, 0644)
+	// defer f.Close()
+	// pprof.StartCPUProfile(f)
+	// defer pprof.StopCPUProfile()
+	go func() {
+		http.ListenAndServe("0.0.0.0:8899", nil)
+	}()
 	engine := tegenaria.NewSpiderEngine(tegenaria.EngineWithUniqueReq(false), tegenaria.EngineWithConcurrencyNum(32))
 	spider := &quotesbot.QuotesbotSpider{
 		Name:     "quote_bot",
