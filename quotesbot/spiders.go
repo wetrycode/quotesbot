@@ -25,6 +25,7 @@ func (d *QuotesbotSpider) StartRequest(req chan<- *tegenaria.Context) {
 			request := tegenaria.NewRequest(url, tegenaria.GET, d.Parser)
 			ctx := tegenaria.NewContext(request)
 			req <- ctx
+			// time.Sleep(time.Hour)
 		}
 	}
 

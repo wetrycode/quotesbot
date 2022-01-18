@@ -2,22 +2,16 @@ module github.com/quotebots
 
 go 1.17
 
-replace github.com/geebytes/tegenaria v0.0.0 => ../tegenaria
-
-require github.com/geebytes/tegenaria v0.0.0
+replace github.com/geebytes/tegenaria v0.0.0 => ../Tegenaria
 
 require (
-	github.com/PuerkitoBio/goquery v1.8.0 // indirect
-	github.com/andybalholm/cascadia v1.3.1 // indirect
-	github.com/antchfx/xpath v1.2.0 // indirect
-	github.com/geebytes/libxml2 v0.0.0-20201123224832-e6d9de61b80d // indirect
-	github.com/golang/groupcache v0.0.0-20210331224755-41bb18bfe9da // indirect
-	github.com/lestrrat-go/libxml2 v0.0.0-20201123224832-e6d9de61b80d // indirect
-	github.com/pkg/errors v0.8.1 // indirect
+	github.com/PuerkitoBio/goquery v1.8.0
+	github.com/geebytes/tegenaria v0.0.0
 )
 
+require github.com/andybalholm/cascadia v1.3.1 // indirect
+
 require (
-	github.com/antchfx/htmlquery v1.2.4
 	github.com/bits-and-blooms/bitset v1.2.1 // indirect
 	github.com/bits-and-blooms/bloom/v3 v3.1.0 // indirect
 	github.com/fsnotify/fsnotify v1.5.1 // indirect
@@ -29,7 +23,6 @@ require (
 	github.com/modern-go/concurrent v0.0.0-20180306012644-bacd9c7ef1dd // indirect
 	github.com/modern-go/reflect2 v1.0.2 // indirect
 	github.com/pelletier/go-toml v1.9.4 // indirect
-	github.com/rifflock/lfshook v0.0.0-20180920164130-b9218ef580f5 // indirect
 	github.com/sirupsen/logrus v1.8.1 // indirect
 	github.com/spaolacci/murmur3 v1.1.0 // indirect
 	github.com/spf13/afero v1.6.0 // indirect

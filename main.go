@@ -9,8 +9,8 @@ package main
 
 import (
 	"fmt"
-	"net/http"
-	_ "net/http/pprof"
+	"os"
+	"runtime/pprof"
 	"time"
 
 	"github.com/geebytes/tegenaria"
@@ -18,13 +18,13 @@ import (
 )
 
 func main() {
-	// f, _ := os.OpenFile("cpu.pprof", os.O_CREATE|os.O_RDWR, 0644)
-	// defer f.Close()
-	// pprof.StartCPUProfile(f)
-	// defer pprof.StopCPUProfile()
-	go func() {
-		http.ListenAndServe("0.0.0.0:8899", nil)
-	}()
+	f, _ := os.OpenFile("cpu.pprof", os.O_CREATE|os.O_RDWR, 0644)
+	defer f.Close()
+	pprof.StartCPUProfile(f)
+	defer pprof.StopCPUProfile()
+	// go func() {
+	// 	http.ListenAndServe("0.0.0.0:8899", nil)
+	// }()
 	engine := tegenaria.NewSpiderEngine(tegenaria.EngineWithUniqueReq(false), tegenaria.EngineWithConcurrencyNum(32))
 	spider := &quotesbot.QuotesbotSpider{
 		Name:     "quote_bot",
@@ -43,30 +43,3 @@ func main() {
 	engine.Close()
 
 }
-
-// func main() {
-// 	q := queue.NewQueue(1024 * 2)
-// 	wg := sync.WaitGroup{}
-// 	wg.Add(1)
-// 	go func() {
-// 		for i := 0; i < 4096; i++ {
-// 			q.Put(i)
-// 		}
-// 		wg.Done()
-// 	}()
-
-// 	func() {
-// 		for {
-// 			i, _, _ := q.Get()
-// 			if i != nil {
-// 				fmt.Printf("%d\n", i.(int))
-
-// 			} else {
-// 				continue
-// 			}
-// 		}
-
-// 	}()
-// 	wg.Wait()
-
-// }
