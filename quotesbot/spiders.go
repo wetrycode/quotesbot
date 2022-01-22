@@ -30,7 +30,7 @@ func (d *QuotesbotSpider) StartRequest(req chan<- *tegenaria.Context) {
 	}
 
 }
-func (d *QuotesbotSpider) Parser(resp *tegenaria.Context, item chan<- *tegenaria.Context, req chan<- *tegenaria.Context) {
+func (d *QuotesbotSpider) Parser(resp *tegenaria.Context, item chan<- *tegenaria.ItemMeta, req chan<- *tegenaria.Context) {
 	text := resp.DownloadResult.Response.String()
 
 	doc, err := goquery.NewDocumentFromReader(strings.NewReader(text))
@@ -51,8 +51,7 @@ func (d *QuotesbotSpider) Parser(resp *tegenaria.Context, item chan<- *tegenaria
 			Author: author,
 			Tags:   strings.Join(tags, ","),
 		}
-		itemCtx := tegenaria.NewContext(resp.Request)
-		itemCtx.Item = &quoteItem
+		itemCtx := tegenaria.NewItem(resp, &quoteItem)
 		item <- itemCtx
 	})
 	doamin_url := resp.Request.Url
@@ -131,7 +130,7 @@ type QuotesbotItemPipeline3 struct {
 	Priority int
 }
 
-func (p *QuotesbotItemPipeline) ProcessItem(spider tegenaria.SpiderInterface, item *tegenaria.Context) error {
+func (p *QuotesbotItemPipeline) ProcessItem(spider tegenaria.SpiderInterface, item *tegenaria.ItemMeta) error {
 	// fmt.Printf("Spider %s run QuotesbotItemPipeline priority is %d\n", spider.GetName(), p.GetPriority())
 	return nil
 
@@ -139,7 +138,7 @@ func (p *QuotesbotItemPipeline) ProcessItem(spider tegenaria.SpiderInterface, it
 func (p *QuotesbotItemPipeline) GetPriority() int {
 	return p.Priority
 }
-func (p *QuotesbotItemPipeline2) ProcessItem(spider tegenaria.SpiderInterface, item *tegenaria.Context) error {
+func (p *QuotesbotItemPipeline2) ProcessItem(spider tegenaria.SpiderInterface, item *tegenaria.ItemMeta) error {
 	// fmt.Printf("Spider %s run QuotesbotItemPipeline2 priority is %d\n", spider.GetName(), p.GetPriority())
 	return nil
 }
@@ -147,7 +146,7 @@ func (p *QuotesbotItemPipeline2) GetPriority() int {
 	return p.Priority
 }
 
-func (p *QuotesbotItemPipeline3) ProcessItem(spider tegenaria.SpiderInterface, item *tegenaria.Context) error {
+func (p *QuotesbotItemPipeline3) ProcessItem(spider tegenaria.SpiderInterface, item *tegenaria.ItemMeta) error {
 	// fmt.Printf("Spider %s run QuotesbotItemPipeline3 priority is %d\n", spider.GetName(), p.GetPriority())
 	return nil
 
