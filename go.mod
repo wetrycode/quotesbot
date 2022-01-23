@@ -7,17 +7,16 @@ require (
 	github.com/wetrycode/tegenaria v0.1.3
 )
 
+replace github.com/wetrycode/tegenaria v0.1.3 => ../Tegenaria
+
 require github.com/andybalholm/cascadia v1.3.1 // indirect
 
 require (
 	github.com/bits-and-blooms/bitset v1.2.1 // indirect
 	github.com/bits-and-blooms/bloom/v3 v3.1.0 // indirect
-	github.com/chzyer/readline v0.0.0-20180603132655-2972be24d48e // indirect
 	github.com/fsnotify/fsnotify v1.5.1 // indirect
-	github.com/google/pprof v0.0.0-20220113144219-d25a53d42d00 // indirect
 	github.com/google/uuid v1.3.0 // indirect
 	github.com/hashicorp/hcl v1.0.0 // indirect
-	github.com/ianlancetaylor/demangle v0.0.0-20211126204342-3ad08eb09c01 // indirect
 	github.com/json-iterator/go v1.1.12 // indirect
 	github.com/magiconair/properties v1.8.5 // indirect
 	github.com/mitchellh/mapstructure v1.4.3 // indirect
