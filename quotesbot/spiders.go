@@ -6,7 +6,7 @@ import (
 	"strings"
 
 	"github.com/PuerkitoBio/goquery"
-	"github.com/geebytes/tegenaria"
+	"github.com/wetrycode/tegenaria"
 )
 
 type QuotesbotSpider struct {
@@ -25,7 +25,6 @@ func (d *QuotesbotSpider) StartRequest(req chan<- *tegenaria.Context) {
 			request := tegenaria.NewRequest(url, tegenaria.GET, d.Parser)
 			ctx := tegenaria.NewContext(request)
 			req <- ctx
-			// time.Sleep(time.Hour)
 		}
 	}
 
@@ -68,49 +67,6 @@ func (d *QuotesbotSpider) Parser(resp *tegenaria.Context, item chan<- *tegenaria
 			req <- newCtx
 		}
 	}
-
-	// doc, _ := htmlquery.Parse(strings.NewReader(text))
-	// list, err := htmlquery.QueryAll(doc, "//div[@class='quote']")
-	// if err != nil {
-	// 	panic(err)
-	// }
-	// for _, n := range list {
-	// 	t := htmlquery.FindOne(n, "//span[@class='text']")
-	// 	var quoteText string = ""
-	// 	var quoteAuthor string = ""
-	// 	var quoteTags string = ""
-	// 	if t != nil {
-	// 		quoteText = htmlquery.InnerText(t)
-	// 	}
-	// 	author := htmlquery.FindOne(n, "//small[@class='author']")
-	// 	if author != nil {
-	// 		quoteAuthor = htmlquery.InnerText(author)
-	// 	}
-	// 	tags := htmlquery.FindOne(n, "//div[@class='tags']/a[@class='tag']")
-	// 	if tags != nil {
-	// 		quoteTags = htmlquery.InnerText(tags)
-	// 	}
-	// 	var quoteItem = QuotesbotItem{
-	// 		Text:   quoteText,
-	// 		Author: quoteAuthor,
-	// 		Tags:   quoteTags,
-	// 	}
-	// 	itemCtx := tegenaria.NewContext(resp.Request, tegenaria.ContextWithItem(&quoteItem))
-	// 	item <- itemCtx
-	// }
-	// doamin_url := resp.Request.Url
-	// u, _ := url.Parse(doamin_url)
-
-	// var nextPageUrl string = ""
-	// nextUrl := htmlquery.FindOne(doc, "//li[@class='next']/a")
-	// if nextUrl != nil {
-	// 	nextPageUrl = htmlquery.SelectAttr(nextUrl, "href")
-	// 	next, _ := url.Parse(nextPageUrl)
-	// 	s := u.ResolveReference(next).String()
-	// 	request := tegenaria.NewRequest(s, tegenaria.GET, d.Parser)
-	// 	reqCtx := tegenaria.NewContext(request)
-	// 	req <- reqCtx
-	// }
 
 }
 func (d *QuotesbotSpider) ErrorHandler() {

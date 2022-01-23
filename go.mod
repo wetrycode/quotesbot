@@ -2,11 +2,9 @@ module github.com/quotebots
 
 go 1.17
 
-replace github.com/geebytes/tegenaria v0.0.0 => ../Tegenaria
-
 require (
 	github.com/PuerkitoBio/goquery v1.8.0
-	github.com/geebytes/tegenaria v0.0.0
+	github.com/wetrycode/tegenaria v0.1.3
 )
 
 require github.com/andybalholm/cascadia v1.3.1 // indirect
@@ -14,9 +12,12 @@ require github.com/andybalholm/cascadia v1.3.1 // indirect
 require (
 	github.com/bits-and-blooms/bitset v1.2.1 // indirect
 	github.com/bits-and-blooms/bloom/v3 v3.1.0 // indirect
+	github.com/chzyer/readline v0.0.0-20180603132655-2972be24d48e // indirect
 	github.com/fsnotify/fsnotify v1.5.1 // indirect
+	github.com/google/pprof v0.0.0-20220113144219-d25a53d42d00 // indirect
 	github.com/google/uuid v1.3.0 // indirect
 	github.com/hashicorp/hcl v1.0.0 // indirect
+	github.com/ianlancetaylor/demangle v0.0.0-20211126204342-3ad08eb09c01 // indirect
 	github.com/json-iterator/go v1.1.12 // indirect
 	github.com/magiconair/properties v1.8.5 // indirect
 	github.com/mitchellh/mapstructure v1.4.3 // indirect
@@ -34,7 +35,7 @@ require (
 	github.com/wxnacy/wgo v1.0.4 // indirect
 	github.com/yireyun/go-queue v0.0.0-20210520035143-72b190eafcba // indirect
 	golang.org/x/net v0.0.0-20211216030914-fe4d6282115f // indirect
-	golang.org/x/sys v0.0.0-20211216021012-1d35b9e2eb4e // indirect
+	golang.org/x/sys v0.0.0-20220114195835-da31bd327af9 // indirect
 	golang.org/x/text v0.3.7 // indirect
 	gopkg.in/ini.v1 v1.66.2 // indirect
 	gopkg.in/yaml.v2 v2.4.0 // indirect
