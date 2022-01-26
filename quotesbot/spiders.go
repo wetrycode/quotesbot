@@ -40,7 +40,7 @@ func (d *QuotesbotSpider) StartRequest(req chan<- *tegenaria.Context) {
 // recvie request download response context
 // and it will send parse result as an item to engine
 // it also will send a new request context to engine
-func (d *QuotesbotSpider) Parser(resp *tegenaria.Context, item chan<- *tegenaria.ItemMeta, req chan<- *tegenaria.Context) {
+func (d *QuotesbotSpider) Parser(resp *tegenaria.Context, item chan<- *tegenaria.ItemMeta, req chan<- *tegenaria.Context) error {
 	text := resp.DownloadResult.Response.String()
 
 	doc, err := goquery.NewDocumentFromReader(strings.NewReader(text))
@@ -80,6 +80,7 @@ func (d *QuotesbotSpider) Parser(resp *tegenaria.Context, item chan<- *tegenaria
 			req <- newCtx
 		}
 	}
+	return nil
 
 }
 // ErrorHandler handler of error
