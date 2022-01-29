@@ -4,7 +4,7 @@ go 1.17
 
 require (
 	github.com/PuerkitoBio/goquery v1.8.0
-	github.com/wetrycode/tegenaria v0.2.1
+	github.com/wetrycode/tegenaria v0.2.4
 )
 
 require github.com/andybalholm/cascadia v1.3.1 // indirect

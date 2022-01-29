@@ -8,12 +8,14 @@ import (
 	"github.com/PuerkitoBio/goquery"
 	"github.com/wetrycode/tegenaria"
 )
+
 // QuotesbotSpider an example of tegenaria spider
 // It is an instance of tegenaria.SpiderInterface interface
 type QuotesbotSpider struct {
 	Name     string
 	FeedUrls []string
 }
+
 // QuotesbotSpider an example of tegenaria item
 type QuotesbotItem struct {
 	Text   string
@@ -36,6 +38,7 @@ func (d *QuotesbotSpider) StartRequest(req chan<- *tegenaria.Context) {
 	}
 
 }
+
 // Parser funcation of tegenaria.SpiderInterface interface
 // recvie request download response context
 // and it will send parse result as an item to engine
@@ -83,11 +86,13 @@ func (d *QuotesbotSpider) Parser(resp *tegenaria.Context, item chan<- *tegenaria
 	return nil
 
 }
+
 // ErrorHandler handler of error
 // it will recvie a tegenaria.HandleError and you can do some handler of this error
-func (d *QuotesbotSpider)ErrorHandler(err *tegenaria.HandleError){
+func (d *QuotesbotSpider) ErrorHandler(err *tegenaria.HandleError, req chan<- *tegenaria.Context) {
 
 }
+
 // GetName get spider name
 func (d *QuotesbotSpider) GetName() string {
 	return d.Name
@@ -106,11 +111,13 @@ type QuotesbotItemPipeline2 struct {
 type QuotesbotItemPipeline3 struct {
 	Priority int
 }
+
 // ProcessItem funcation of tegenaria.PipelinesInterface,it is used to handle item
 func (p *QuotesbotItemPipeline) ProcessItem(spider tegenaria.SpiderInterface, item *tegenaria.ItemMeta) error {
 	return nil
 
 }
+
 // GetPriority get priority of pipline
 func (p *QuotesbotItemPipeline) GetPriority() int {
 	return p.Priority
